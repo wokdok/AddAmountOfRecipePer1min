@@ -8,6 +8,9 @@ This mod adds amount of recipe per 1min in ItemTip GUI.
 
 ## ChangeLog
 
+### 1.1.1
+* fix error when hover over the deuterium recipe.
+
 ### 1.1.0
 * If the recipe uses Assembler, calculate with the most powerful Assembler.（mk3＞mk2>mk1)
 

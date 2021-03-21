@@ -82,15 +82,16 @@ namespace AddAmountOfRecipePer1min
 
 				for (int j = 0; j < list.Count; j++)
 				{
-					if(list[j].Type == ERecipeType.Fractionate)
-                    {
-						recipeEntryArr[j + 32].gameObject.SetActive(false);
-						continue;
-                    }
 
 					if (recipeEntryArr[j + 32] == null)
 					{
 						recipeEntryArr[j + 32] = UnityEngine.Object.Instantiate<UIRecipeEntry>(recipeEntry, __instance.transform);
+					}
+
+					if (list[j].Type == ERecipeType.Fractionate)
+					{
+						recipeEntryArr[j + 32].gameObject.SetActive(false);
+						continue;
 					}
 					setRecipe1Min(recipeEntryArr[j + 32], list[j]);
 					recipeEntryArr[j + 32].rectTrans.anchoredPosition = new Vector2((float)(recipeEntryArr[j].rectTrans.anchoredPosition.x + recipeMaxWidth), recipeEntryArr[j].rectTrans.anchoredPosition.y);

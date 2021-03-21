@@ -1,6 +1,6 @@
 {
 	"name": "AddAmountOfRecipePer1min",
-	"version_number": "1.1.0",
+	"version_number": "1.1.1",
 	"website_url": "https://github.com/wokdok/AddAmountOfRecipePer1min",
 	"description": "Add Another Amount of Recipe Per 1min in ItemTip GUI.",
 	"dependencies": []
