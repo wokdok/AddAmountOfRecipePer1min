@@ -93,7 +93,6 @@ namespace AddAmountOfRecipePer1min
 						recipeEntryArr[j + 32] = UnityEngine.Object.Instantiate<UIRecipeEntry>(recipeEntry, __instance.transform);
 					}
 					setRecipe1Min(recipeEntryArr[j + 32], list[j]);
-					UnityEngine.Debug.Log(recipeEntryArr[j + 32]);
 					recipeEntryArr[j + 32].rectTrans.anchoredPosition = new Vector2((float)(recipeEntryArr[j].rectTrans.anchoredPosition.x + recipeMaxWidth), recipeEntryArr[j].rectTrans.anchoredPosition.y);
 					recipeEntryArr[j + 32].gameObject.SetActive(true);
 				}
@@ -141,6 +140,31 @@ namespace AddAmountOfRecipePer1min
 			int num = 0;
 			int num2 = 0;
 			int num3 = 0;
+			double buildSpeed = 1.0;
+			if(uiRecipeEntry.timeText.rectTransform.sizeDelta.y > 37){
+				uiRecipeEntry.timeText.rectTransform.sizeDelta = new Vector2(uiRecipeEntry.timeText.rectTransform.sizeDelta.x, 37);
+			}
+			uiRecipeEntry.timeText.text = "1min";
+			if (recipeProto.Type == ERecipeType.Assemble)
+            {
+				uiRecipeEntry.timeText.rectTransform.sizeDelta = new Vector2(uiRecipeEntry.timeText.rectTransform.sizeDelta.x, uiRecipeEntry.timeText.rectTransform.sizeDelta.y + 30);
+
+				if (GameMain.data.history.TechUnlocked(1203))
+				{
+					buildSpeed = 1.5;
+					uiRecipeEntry.timeText.text = "1min\n(mk3)";
+					uiRecipeEntry.timeText.lineSpacing = (float)0.7;
+
+				} else if (GameMain.data.history.TechUnlocked(1202))
+				{
+					uiRecipeEntry.timeText.text = "1min\n(mk2)";
+				} else
+                {
+					buildSpeed = 0.75;
+					uiRecipeEntry.timeText.text = "1min\n(mk1)";
+				}
+			}
+
 			while (num3 < recipeProto.Results.Length && num < 7)
 			{
 				ItemProto itemProto = LDB.items.Select(recipeProto.Results[num3]);
@@ -152,7 +176,7 @@ namespace AddAmountOfRecipePer1min
 				{
 					uiRecipeEntry.icons[num].sprite = null;
 				}
-				uiRecipeEntry.countTexts[num].text = (60f / (float)recipeProto.TimeSpend * 60f * recipeProto.ResultCounts[num3]).ToString();
+				uiRecipeEntry.countTexts[num].text = (60f / (float)recipeProto.TimeSpend * 60f * recipeProto.ResultCounts[num3] * buildSpeed).ToString();
 				uiRecipeEntry.icons[num].rectTransform.anchoredPosition = new Vector2((float)num2, 0f);
 				uiRecipeEntry.icons[num].gameObject.SetActive(true);
 				num++;
@@ -160,7 +184,6 @@ namespace AddAmountOfRecipePer1min
 				num3++;
 			}
 			uiRecipeEntry.arrow.anchoredPosition = new Vector2((float)num2, -27f);
-			uiRecipeEntry.timeText.text = "1min";
 			num2 += 40;
 			int num4 = 0;
 			while (num4 < recipeProto.Items.Length && num < 7)
@@ -174,7 +197,7 @@ namespace AddAmountOfRecipePer1min
 				{
 					uiRecipeEntry.icons[num].sprite = null;
 				}
-				uiRecipeEntry.countTexts[num].text = (60f / (float)recipeProto.TimeSpend * 60f * recipeProto.ItemCounts[num4]).ToString();
+				uiRecipeEntry.countTexts[num].text = (60f / (float)recipeProto.TimeSpend * 60f * recipeProto.ItemCounts[num4] * buildSpeed).ToString();
 
 				uiRecipeEntry.icons[num].rectTransform.anchoredPosition = new Vector2((float)num2, 0f);
 				uiRecipeEntry.icons[num].gameObject.SetActive(true);
