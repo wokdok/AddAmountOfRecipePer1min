@@ -8,6 +8,9 @@ This mod adds amount of recipe per 1min in ItemTip GUI.
 
 ## ChangeLog
 
+### 1.2.1
+* fix error when hover over the coal recipe.
+
 ### 1.2.0
 * add amount of transport speed per 1min to belt recipe.
 * refactoring

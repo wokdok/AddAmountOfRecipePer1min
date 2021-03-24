@@ -63,7 +63,7 @@ namespace AddAmountOfRecipePer1min
 			List<RecipeProto> list = (itemProto != null) ? itemProto.recipes : ((recipeProto != null) ? tmp_recipeList : null);
 			ref UIRecipeEntry recipeEntry = ref AccessTools.FieldRefAccess<UIItemTip, UIRecipeEntry>(__instance, "recipeEntry");
 			ref UIRecipeEntry[] recipeEntryArr = ref AccessTools.FieldRefAccess<UIItemTip, UIRecipeEntry[]>(__instance, "recipeEntryArr");
-			if (recipeEntryArr.Length == DEFAULT_RECIPE_ENTRY_ARR_SIZE){
+			if (recipeEntryArr != null && recipeEntryArr.Length == DEFAULT_RECIPE_ENTRY_ARR_SIZE){
 				Array.Resize(ref recipeEntryArr, DEFAULT_RECIPE_ENTRY_ARR_SIZE * 2);
 			}
 			
