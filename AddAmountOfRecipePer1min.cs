@@ -1,15 +1,18 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AddAmountOfRecipePer1min
 {
-
-    [HarmonyPatch(typeof(UIItemTip))]
+	[HarmonyPatch(typeof(UIItemTip))]
 	[HarmonyPatch("SetTip")]
 	static class Patch_UIItemTip_SetTip
 	{
+		const int DEFAULT_RECIPE_ENTRY_ARR_SIZE = 32;
+
 		static void Prefix(UIItemTip __instance, int __0, int __1, Vector2 __2, Transform __3)
 		{
 			ref UIRecipeEntry[] recipeEntryArr = ref AccessTools.FieldRefAccess<UIItemTip, UIRecipeEntry[]>(__instance, "recipeEntryArr");
@@ -60,7 +63,10 @@ namespace AddAmountOfRecipePer1min
 			List<RecipeProto> list = (itemProto != null) ? itemProto.recipes : ((recipeProto != null) ? tmp_recipeList : null);
 			ref UIRecipeEntry recipeEntry = ref AccessTools.FieldRefAccess<UIItemTip, UIRecipeEntry>(__instance, "recipeEntry");
 			ref UIRecipeEntry[] recipeEntryArr = ref AccessTools.FieldRefAccess<UIItemTip, UIRecipeEntry[]>(__instance, "recipeEntryArr");
-			Array.Resize(ref recipeEntryArr, 64);
+			if (recipeEntryArr.Length == DEFAULT_RECIPE_ENTRY_ARR_SIZE){
+				Array.Resize(ref recipeEntryArr, DEFAULT_RECIPE_ENTRY_ARR_SIZE * 2);
+			}
+			
 
 			if (list != null && list.Count > 0)
 			{
@@ -83,19 +89,19 @@ namespace AddAmountOfRecipePer1min
 				for (int j = 0; j < list.Count; j++)
 				{
 
-					if (recipeEntryArr[j + 32] == null)
+					if (recipeEntryArr[j + DEFAULT_RECIPE_ENTRY_ARR_SIZE] == null)
 					{
-						recipeEntryArr[j + 32] = UnityEngine.Object.Instantiate<UIRecipeEntry>(recipeEntry, __instance.transform);
+						recipeEntryArr[j + DEFAULT_RECIPE_ENTRY_ARR_SIZE] = UnityEngine.Object.Instantiate<UIRecipeEntry>(recipeEntry, __instance.transform);
 					}
 
 					if (list[j].Type == ERecipeType.Fractionate)
 					{
-						recipeEntryArr[j + 32].gameObject.SetActive(false);
+						recipeEntryArr[j + DEFAULT_RECIPE_ENTRY_ARR_SIZE].gameObject.SetActive(false);
 						continue;
 					}
-					setRecipe1Min(recipeEntryArr[j + 32], list[j]);
-					recipeEntryArr[j + 32].rectTrans.anchoredPosition = new Vector2((float)(recipeEntryArr[j].rectTrans.anchoredPosition.x + recipeMaxWidth), recipeEntryArr[j].rectTrans.anchoredPosition.y);
-					recipeEntryArr[j + 32].gameObject.SetActive(true);
+					setRecipe1Min(recipeEntryArr[j + DEFAULT_RECIPE_ENTRY_ARR_SIZE], list[j]);
+					recipeEntryArr[j + DEFAULT_RECIPE_ENTRY_ARR_SIZE].rectTrans.anchoredPosition = new Vector2((float)(recipeEntryArr[j].rectTrans.anchoredPosition.x + recipeMaxWidth), recipeEntryArr[j].rectTrans.anchoredPosition.y);
+					recipeEntryArr[j + DEFAULT_RECIPE_ENTRY_ARR_SIZE].gameObject.SetActive(true);
 				}
 				ref RectTransform trans = ref AccessTools.FieldRefAccess<UIItemTip, RectTransform>(__instance, "trans");
 				if (trans.sizeDelta.x < recipeMaxWidth * 2)
@@ -133,6 +139,16 @@ namespace AddAmountOfRecipePer1min
 				}
 				
 			}
+
+            if (itemProto != null && itemProto.prefabDesc.isBelt)
+            {
+				StringBuilder sb = new StringBuilder("         ", 12);
+				String perSecond = itemProto.GetPropValue(0, sb);
+				String perMin = ((double)itemProto.prefabDesc.beltSpeed * 60.0 / 10.0 * 60).ToString("0.##") + "/min";
+				ref Text valueText = ref AccessTools.FieldRefAccess<UIItemTip, Text>(__instance, "valuesText");
+				valueText.text = valueText.text.Replace(perSecond, perSecond + "(" + perMin + ")");
+
+			}
 		}
 
 		static void setRecipe1Min(UIRecipeEntry uiRecipeEntry, RecipeProto recipeProto)
@@ -148,21 +164,21 @@ namespace AddAmountOfRecipePer1min
 			uiRecipeEntry.timeText.text = "1min";
 			if (recipeProto.Type == ERecipeType.Assemble)
             {
-				uiRecipeEntry.timeText.rectTransform.sizeDelta = new Vector2(uiRecipeEntry.timeText.rectTransform.sizeDelta.x, uiRecipeEntry.timeText.rectTransform.sizeDelta.y + 30);
+				uiRecipeEntry.timeText.rectTransform.sizeDelta = new Vector2(uiRecipeEntry.timeText.rectTransform.sizeDelta.x, uiRecipeEntry.timeText.rectTransform.sizeDelta.y + 25);
 
 				if (GameMain.data.history.TechUnlocked(1203))
 				{
 					buildSpeed = 1.5;
-					uiRecipeEntry.timeText.text = "1min\n(mk3)";
+					uiRecipeEntry.timeText.text = "1min\r\n(mk3)";
 					uiRecipeEntry.timeText.lineSpacing = (float)0.7;
 
 				} else if (GameMain.data.history.TechUnlocked(1202))
 				{
-					uiRecipeEntry.timeText.text = "1min\n(mk2)";
+					uiRecipeEntry.timeText.text = "1min\r\n(mk2)";
 				} else
                 {
 					buildSpeed = 0.75;
-					uiRecipeEntry.timeText.text = "1min\n(mk1)";
+					uiRecipeEntry.timeText.text = "1min\r\n(mk1)";
 				}
 			}
 
