@@ -143,7 +143,7 @@ namespace AddAmountOfRecipePer1min
             if (itemProto != null && itemProto.prefabDesc.isBelt)
             {
 				StringBuilder sb = new StringBuilder("         ", 12);
-				String perSecond = itemProto.GetPropValue(0, sb);
+				String perSecond = itemProto.GetPropValue(0, sb, 0);
 				String perMin = ((double)itemProto.prefabDesc.beltSpeed * 60.0 / 10.0 * 60).ToString("0.##") + "/min";
 				ref Text valueText = ref AccessTools.FieldRefAccess<UIItemTip, Text>(__instance, "valuesText");
 				valueText.text = valueText.text.Replace(perSecond, perSecond + "(" + perMin + ")");
