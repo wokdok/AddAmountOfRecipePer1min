@@ -16,7 +16,7 @@ namespace AddAmountOfRecipePer1min
 		static void Prefix(UIItemTip __instance, int __0, int __1, Vector2 __2, Transform __3)
 		{
 			ref UIRecipeEntry[] recipeEntryArr = ref AccessTools.FieldRefAccess<UIItemTip, UIRecipeEntry[]>(__instance, "recipeEntryArr");
-			
+
 			if (recipeEntryArr != null)
 			{
 				for (int k = 0; k < recipeEntryArr.Length; k++)
@@ -32,7 +32,7 @@ namespace AddAmountOfRecipePer1min
 		static void Postfix(UIItemTip __instance, int __0, int __1, Vector2 __2, Transform __3)
         {
 			int itemId = __0;
-			
+
 			int num;
 			int id;
 
@@ -66,7 +66,7 @@ namespace AddAmountOfRecipePer1min
 			if (recipeEntryArr != null && recipeEntryArr.Length == DEFAULT_RECIPE_ENTRY_ARR_SIZE){
 				Array.Resize(ref recipeEntryArr, DEFAULT_RECIPE_ENTRY_ARR_SIZE * 2);
 			}
-			
+
 
 			if (list != null && list.Count > 0)
 			{
@@ -137,13 +137,13 @@ namespace AddAmountOfRecipePer1min
 					trans.anchoredPosition = new Vector2((float)((int)trans.anchoredPosition.x), (float)((int)trans.anchoredPosition.y));
 					trans.localScale = new Vector3(1f, 1f, 1f);
 				}
-				
+
 			}
 
             if (itemProto != null && itemProto.prefabDesc.isBelt)
             {
 				StringBuilder sb = new StringBuilder("         ", 12);
-				String perSecond = itemProto.GetPropValue(0, sb);
+				String perSecond = itemProto.GetPropValue(0, sb, 0);
 				String perMin = ((double)itemProto.prefabDesc.beltSpeed * 60.0 / 10.0 * 60).ToString("0.##") + "/min";
 				ref Text valueText = ref AccessTools.FieldRefAccess<UIItemTip, Text>(__instance, "valuesText");
 				valueText.text = valueText.text.Replace(perSecond, perSecond + "(" + perMin + ")");
@@ -166,19 +166,29 @@ namespace AddAmountOfRecipePer1min
             {
 				uiRecipeEntry.timeText.rectTransform.sizeDelta = new Vector2(uiRecipeEntry.timeText.rectTransform.sizeDelta.x, uiRecipeEntry.timeText.rectTransform.sizeDelta.y + 25);
 
-				if (GameMain.data.history.TechUnlocked(1203))
-				{
-					buildSpeed = 1.5;
-					uiRecipeEntry.timeText.text = "1min\r\n(mk3)";
-					uiRecipeEntry.timeText.lineSpacing = (float)0.7;
-
-				} else if (GameMain.data.history.TechUnlocked(1202))
+				if (GameMain.data.history.TechUnlocked(1202))
 				{
 					uiRecipeEntry.timeText.text = "1min\r\n(mk2)";
-				} else
+				}
+				else
                 {
 					buildSpeed = 0.75;
 					uiRecipeEntry.timeText.text = "1min\r\n(mk1)";
+				}
+
+				if (Input.GetKey(KeyCode.LeftControl)) {
+					buildSpeed = 0.75;
+					uiRecipeEntry.timeText.text = "1min\r\n(mk1)";
+				}
+
+				if (Input.GetKey(KeyCode.LeftShift)) {
+					buildSpeed = 1;
+					uiRecipeEntry.timeText.text = "1min\r\n(mk2)";
+				}
+
+				if (Input.GetKey(KeyCode.LeftAlt)) {
+					buildSpeed = 1.5;
+					uiRecipeEntry.timeText.text = "1min\r\n(mk3)";
 				}
 			}
 
